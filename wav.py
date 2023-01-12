@@ -3,6 +3,10 @@ from plot_sound import sound_plot as plot
 def readb(b):
     return int.from_bytes(b, "little")
 
+def save_changes(header, s_data):
+    with open("edit.wav", "wb") as f:
+        f.write(header + s_data)
+
 with open("weezer.wav", "rb") as f:
     f.seek(16)
     ft_length = readb(f.read(3))
@@ -32,11 +36,13 @@ with open("weezer.wav", "rb") as f:
             break
         i += 1
 
+    f.seek(0)
+    header = f.read(data_start)
+    print(header)
+
     sound_data = []
     f.seek(data_start)
     for i in range(data_size // byte_depth):
         d = readb(f.read(byte_depth))
-        sound_data.append(d)
+        sound_data.append(d) 
 
-    plot(sound_data[:1000])
-    
